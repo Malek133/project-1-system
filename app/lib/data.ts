@@ -16,12 +16,12 @@ export async function fetchRevenue() {
     // Artificially delay a response for demo purposes.
     // Don't do this in production :)
 
-    // console.log('Fetching revenue data...');
-    // await new Promise((resolve) => setTimeout(resolve, 3000));
+     console.log('Fetching revenue data...');
+     await new Promise((resolve) => setTimeout(resolve, 3000));
 
     const data = await sql<Revenue[]>`SELECT * FROM revenue`;
 
-    // console.log('Data fetch completed after 3 seconds.');
+     console.log('Data fetch completed after 3 seconds.');
 
     return data;
   } catch (error) {
@@ -142,31 +142,6 @@ export async function fetchInvoicesPages(query: string) {
   }
 }
 
-export async function fetchInvoiceById(id: string) {
-  try {
-    const data = await sql<InvoiceForm[]>`
-      SELECT
-        invoices.id,
-        invoices.customer_id,
-        invoices.amount,
-        invoices.status
-      FROM invoices
-      WHERE invoices.id = ${id};
-    `;
-
-    const invoice = data.map((invoice) => ({
-      ...invoice,
-      // Convert amount from cents to dollars
-      amount: invoice.amount / 100,
-    }));
-
-    return invoice[0];
-  } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch invoice.');
-  }
-}
-
 export async function fetchCustomers() {
   try {
     const customers = await sql<CustomerField[]>`
@@ -214,5 +189,30 @@ export async function fetchFilteredCustomers(query: string) {
   } catch (err) {
     console.error('Database Error:', err);
     throw new Error('Failed to fetch customer table.');
+  }
+}
+
+export async function fetchInvoiceById(id: string) {
+  try {
+    const data = await sql<InvoiceForm[]>`
+      SELECT
+        invoices.id,
+        invoices.customer_id,
+        invoices.amount,
+        invoices.status
+      FROM invoices
+      WHERE invoices.id = ${id};
+    `;
+
+    const invoice = data.map((invoice) => ({
+      ...invoice,
+      // Convert amount from cents to dollars
+      amount: invoice.amount / 100,
+    }));
+
+    return invoice[0];
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch invoice.');
   }
 }
