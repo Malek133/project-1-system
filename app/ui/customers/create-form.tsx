@@ -10,6 +10,7 @@ import { createCustomers, StateC } from '@/app/lib/actions';
 export default function Form() {
   const initialState: StateC = { message: null, errors: {} };
   const [state, formAction] = useActionState(createCustomers,initialState);
+  console.log(state)
   return (
     <form action={formAction}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">

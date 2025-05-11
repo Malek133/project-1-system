@@ -2,10 +2,10 @@
 
 
 import {
-  CheckIcon,
-  ClockIcon,
+  // CheckIcon,
+  // ClockIcon,
   CurrencyDollarIcon,
-  UserCircleIcon,
+  // UserCircleIcon,
 } from '@heroicons/react/24/outline';
 import { CustomerField } from '@/app/lib/definitions';
 import Link from 'next/link';
@@ -22,6 +22,7 @@ export default function EditInvoiceForm({
   const initialState: StateC = { message: null, errors: {} };
   const updateCustomersWithId = updateCustomers.bind(null, customers.id);
   const [state, formAction] = useActionState(updateCustomersWithId, initialState);
+  console.log(state)
   return (
     <form action={formAction}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
