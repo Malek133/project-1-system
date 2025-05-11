@@ -1,22 +1,19 @@
-import Image from 'next/image';
+ import Image from 'next/image';
 import { lusitana } from '@/app/ui/fonts';
-import Search from '@/app/ui/search';
-import {
-  CustomersTableType,
-  FormattedCustomersTable,
-} from '@/app/lib/definitions';
+import { fetchFilteredCustomers } from '@/app/lib/data';
+import { DeleteCustomers, UpdateCustomers } from './buttons';
+
 
 export default async function CustomersTable({
-  customers,
+  query,
+  currentPage,
 }: {
-  customers: FormattedCustomersTable[];
+  query: string;
+  currentPage: number;
 }) {
+  const customers = await fetchFilteredCustomers(query, currentPage);
   return (
     <div className="w-full">
-      <h1 className={`${lusitana.className} mb-8 text-xl md:text-2xl`}>
-        Customers
-      </h1>
-      <Search placeholder="Search customers..." />
       <div className="mt-6 flow-root">
         <div className="overflow-x-auto">
           <div className="inline-block min-w-full align-middle">
@@ -31,21 +28,31 @@ export default async function CustomersTable({
                       <div>
                         <div className="mb-2 flex items-center">
                           <div className="flex items-center gap-3">
-                            <Image
-                              src={customer.image_url}
-                              className="rounded-full"
-                              alt={`${customer.name}'s profile picture`}
-                              width={28}
-                              height={28}
-                            />
+                          {customer.image_url ? (
+                        <Image
+                          src={customer.image_url}
+                          className="rounded-full"
+                          width={28}
+                           height={28}
+                            alt={`${customer.name}'s profile picture`}
+                              />
+                              ) : (
+                        <div className="w-[28px] h-[28px] rounded-full bg-gray-300 flex items-center justify-center text-xs font-medium text-white">
+                          {customer.name?.charAt(0).toUpperCase()}
+                         </div>
+                           )}
                             <p>{customer.name}</p>
                           </div>
                         </div>
                         <p className="text-sm text-gray-500">
                           {customer.email}
                         </p>
+                         
                       </div>
                     </div>
+                    <div className="flex justify-end gap-2">
+                      <DeleteCustomers id={customer.id} />
+                      </div>
                     <div className="flex w-full items-center justify-between border-b py-5">
                       <div className="flex w-1/2 flex-col">
                         <p className="text-xs">Pending</p>
@@ -58,6 +65,8 @@ export default async function CustomersTable({
                     </div>
                     <div className="pt-4 text-sm">
                       <p>{customer.total_invoices} invoices</p>
+
+                      
                     </div>
                   </div>
                 ))}
@@ -70,6 +79,9 @@ export default async function CustomersTable({
                     </th>
                     <th scope="col" className="px-3 py-5 font-medium">
                       Email
+                    </th>
+                    <th scope="col" className="px-3 py-5 font-medium">
+                      Action
                     </th>
                     <th scope="col" className="px-3 py-5 font-medium">
                       Total Invoices
@@ -88,19 +100,31 @@ export default async function CustomersTable({
                     <tr key={customer.id} className="group">
                       <td className="whitespace-nowrap bg-white py-5 pl-4 pr-3 text-sm text-black group-first-of-type:rounded-md group-last-of-type:rounded-md sm:pl-6">
                         <div className="flex items-center gap-3">
-                          <Image
-                            src={customer.image_url}
-                            className="rounded-full"
-                            alt={`${customer.name}'s profile picture`}
-                            width={28}
-                            height={28}
-                          />
+                        {customer.image_url ? (
+  <Image
+    src={customer.image_url}
+    className="rounded-full"
+    width={28}
+    height={28}
+    alt={`${customer.name}'s profile picture`}
+  />
+) : (
+  <div className="w-[28px] h-[28px] rounded-full bg-gray-300 flex items-center justify-center text-xs font-medium text-white">
+    {customer.name?.charAt(0).toUpperCase()}
+  </div>
+)}
+
                           <p>{customer.name}</p>
                         </div>
                       </td>
                       <td className="whitespace-nowrap bg-white px-4 py-5 text-sm">
                         {customer.email}
                       </td>
+                      <td className="flex justify-end gap-2">
+                        <UpdateCustomers id={customer.id} />
+                        <DeleteCustomers id={customer.id} />
+                       </td>
+
                       <td className="whitespace-nowrap bg-white px-4 py-5 text-sm">
                         {customer.total_invoices}
                       </td>
